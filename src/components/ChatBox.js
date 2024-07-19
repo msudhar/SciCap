@@ -4,15 +4,15 @@ import axios from 'axios';
 const ChatBox = () => {
   const [file, setFile] = useState(null);
   const [fileURL, setFileURL] = useState(null);
-  const [originalCaption, setOriginalCaption] = useState('');
-  const [fineTunedCaption, setFineTunedCaption] = useState('');
+  const [originalModelData, setOriginalModelData] = useState({});
+  const [fineTunedModelData, setFineTunedModelData] = useState({});
 
   const handleFileChange = (e) => {
     const uploadedFile = e.target.files[0];
     setFile(uploadedFile);
     setFileURL(URL.createObjectURL(uploadedFile));
-    setOriginalCaption('');
-    setFineTunedCaption('');
+    setOriginalModelData({});
+    setFineTunedModelData({});
   };
 
   const handleSubmit = async (e) => {
@@ -33,7 +33,6 @@ const ChatBox = () => {
           },
         }
       );
-      const { caption: originalCaption } = originalResponse.data;
 
       // Fetch caption from fine-tuned model
       const fineTunedResponse = await axios.post(
@@ -46,13 +45,10 @@ const ChatBox = () => {
           },
         }
       );
-      const { caption: fineTunedCaption } = fineTunedResponse.data;
 
-      setOriginalCaption(originalCaption);
-      setFineTunedCaption(fineTunedCaption);
+      setOriginalModelData(originalResponse.data);
+      setFineTunedModelData(fineTunedResponse.data);
     } catch (error) {
-      setOriginalCaption('Server is down.  Please try again later!');
-      setFineTunedCaption('Server is down.  Please try again later!');
       console.error('There was an error uploading the file!', error);
     }
   };
@@ -97,7 +93,7 @@ const ChatBox = () => {
           />
         </div>
       )}
-      {originalCaption && (
+      {originalModelData.caption && (
         <div style={{ 
           marginTop: '20px', 
           textAlign: 'center', 
@@ -108,11 +104,12 @@ const ChatBox = () => {
           backgroundColor: '#f9f9f9'
         }}>
           <h3 style={{ fontWeight: 'bold', color: '#333' }}>Original LLava Model:</h3>
-          <h4 style={{ fontWeight: 'bold', color: '#888' }}>Generated Caption</h4>
-          <p style={{ fontSize: '1.2em', color: '#555' }}>{originalCaption}</p>
+          <p style={{ fontSize: '1.2em', color: '#555' }}><b>Caption: </b>{originalModelData.caption}</p>
+          <p style={{ fontSize: '1.2em', color: '#555' }}><b>Original Caption:</b> {originalModelData.original_caption}</p>
+          <p style={{ fontSize: '1.2em', color: '#555' }}><b>BELU Score:</b> {originalModelData.belu_score}</p>
         </div>
       )}
-      {fineTunedCaption && (
+      {fineTunedModelData.caption && (
         <div style={{ 
           marginTop: '20px', 
           textAlign: 'center', 
@@ -123,8 +120,9 @@ const ChatBox = () => {
           backgroundColor: '#f9f9f9'
         }}>
           <h3 style={{ fontWeight: 'bold', color: '#333' }}>Our Fine Tuned Model:</h3>
-          <h4 style={{ fontWeight: 'bold', color: '#088' }}>Generated Caption</h4>
-          <p style={{ fontSize: '1.2em', color: '#555' }}>{fineTunedCaption}</p>
+          <p style={{ fontSize: '1.2em', color: '#555' }}><b>Caption:</b> {fineTunedModelData.caption}</p>
+          <p style={{ fontSize: '1.2em', color: '#555' }}><b>Original Caption: </b> {fineTunedModelData.original_caption}</p>
+          <p style={{ fontSize: '1.2em', color: '#555' }}><b>BELU Score:</b> {fineTunedModelData.belu_score}</p>
         </div>
       )}
     </div>
