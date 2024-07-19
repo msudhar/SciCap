@@ -18,6 +18,7 @@ const ChatBox = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
+	formData.append('prompt', prompt);
     formData.append('file', file);
 
     try {
