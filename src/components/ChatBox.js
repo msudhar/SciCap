@@ -87,8 +87,8 @@ const ChatBox = () => {
             src={fileURL} 
             alt="Uploaded Preview" 
             style={{ 
-              maxWidth: '400px', 
-              maxHeight: '400px', 
+              maxWidth: '500px', 
+              maxHeight: '500px', 
               display: 'block', 
               margin: '0 auto', 
               border: '1px solid #ccc', 
