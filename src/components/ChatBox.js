@@ -4,6 +4,7 @@ import axios from 'axios';
 const ChatBox = () => {
   const [file, setFile] = useState(null);
   const [fileURL, setFileURL] = useState(null);
+  const [prompt, setPrompt] = useState('Provide a scientific caption for this image');
   const [originalModelData, setOriginalModelData] = useState({});
   const [fineTunedModelData, setFineTunedModelData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -23,8 +24,8 @@ const ChatBox = () => {
     setLoading(true);
     setError('');
     const formData = new FormData();
-	formData.append('Provide a scientific caption for this image', prompt);
     formData.append('file', file);
+    formData.append('prompt', prompt);  // Append the correct prompt
 
     try {
       // Fetch caption from original LLAVA model
@@ -140,7 +141,7 @@ const ChatBox = () => {
           backgroundColor: '#f9f9f9'
         }}>
           <h3 style={{ fontWeight: 'bold', color: '#333' }}>Original LLava Model:</h3>
-          <p style={{ fontSize: '1.2em', color: '#555' }}><b>Caption:</b> {originalModelData.caption}</p>
+          <p style={{ fontSize: '1.2em', color: '#555' }}><b>Caption: </b>{originalModelData.caption}</p>
           <p style={{ fontSize: '1.2em', color: '#555' }}><b>Original Caption:</b> {originalModelData.original_caption}</p>
           <p style={{ fontSize: '1.2em', color: '#555' }}><b>BELU Score:</b> {originalModelData.belu_score}</p>
         </div>
