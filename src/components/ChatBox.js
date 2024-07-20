@@ -7,6 +7,7 @@ const ChatBox = () => {
   const [originalModelData, setOriginalModelData] = useState({});
   const [fineTunedModelData, setFineTunedModelData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleFileChange = (e) => {
     const uploadedFile = e.target.files[0];
@@ -14,13 +15,15 @@ const ChatBox = () => {
     setFileURL(URL.createObjectURL(uploadedFile));
     setOriginalModelData({});
     setFineTunedModelData({});
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     const formData = new FormData();
-	formData.append('prompt', prompt);
+	formData.append('Provide a scientific caption for this image', prompt);
     formData.append('file', file);
 
     try {
@@ -52,6 +55,7 @@ const ChatBox = () => {
       setFineTunedModelData(fineTunedResponse.data);
     } catch (error) {
       console.error('There was an error uploading the file!', error);
+      setError('Server is down. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -115,6 +119,16 @@ const ChatBox = () => {
           </div>
         </div>
       )}
+      {error && (
+        <div style={{ 
+          marginTop: '20px', 
+          textAlign: 'center', 
+          color: 'red', 
+          fontWeight: 'bold' 
+        }}>
+          {error}
+        </div>
+      )}
       {originalModelData.caption && !loading && (
         <div style={{ 
           marginTop: '20px', 
@@ -144,7 +158,7 @@ const ChatBox = () => {
           <h3 style={{ fontWeight: 'bold', color: '#333' }}>Our Fine Tuned Model:</h3>
           <p style={{ fontSize: '1.2em', color: '#555' }}><b>Caption:</b> {fineTunedModelData.caption}</p>
           <p style={{ fontSize: '1.2em', color: '#555' }}><b>Original Caption:</b> {fineTunedModelData.original_caption}</p>
-          <p style={{ fontSize: '1.2em', color: '#555' }}><b>BELU Score: </b>{fineTunedModelData.belu_score}</p>
+          <p style={{ fontSize: '1.2em', color: '#555' }}><b>BELU Score:</b> {fineTunedModelData.belu_score}</p>
         </div>
       )}
       <style>
